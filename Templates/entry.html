@@ -1,0 +1,25 @@
+{% extends "main.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<form method = "POST" action="entry">
+    {% csrf_token%}
+  <div class="datepicker">	
+      <input id="datepicker" width="300" name="date" />
+        <script>
+              $('#datepicker').datepicker({
+                uiLibrary: 'bootstrap4'
+              });
+        </script>
+  </div>
+  <div class="texteditor">
+  <textarea name = "text"></textarea>
+  <h6> NOTE:YOU CAN ADJUST THE SIZE OF TEXTAREA ACCORDING TO YOUR WISH </h6>
+  </div>
+  
+  <button class="button button1">Store</button>
+  </form>
+  {% else %}
+  <h2 style="margin-left: 40%;" style="margin-bottom: 10%;"> Kindly Login to continue</h2> 
+  {% endif %}
+
+{% endblock %}
