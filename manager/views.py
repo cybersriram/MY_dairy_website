@@ -1,6 +1,9 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth.models import User,auth
 import time,datetime,calendar,sqlite3
+from django.http import FileResponse
+from bs4 import BeautifulSoup
+import html
 # Create your views here.
 def index(request):
     return render(request,"main.html")
@@ -112,3 +115,50 @@ def fetch_db(name,FROM):
         # Closing the connection
     conn.close()
     return result
+def forgot_password(request):
+    if request.method =="POST":
+        username = request.POST['name']
+        psw = request.POST['psw']
+        re_psw = request.POST['psw-repeat']
+        if psw == re_psw:
+            raw_password = psw
+            u = User.objects.get(username__exact=username)
+            u.set_password(raw_password)
+            u.save()
+            return redirect("login")
+        else:
+            return render(request,"forgot.html",{'s':"Password Mismatch"})
+    else:
+        return render(request,"forgot.html")
+def download(request):
+    username = request.user.username
+    # get cursor object 
+    db = sqlite3.connect('manager.db')
+    cursor= db.cursor() 
+
+    # get number of rows in a table and give your table 
+    # name in the query 
+    sql ="SELECT CONTENT,Date,DAY FROM "+username
+    cursor.execute(sql)
+    number_of_rows= cursor.fetchall() 
+    for r in range(len(number_of_rows)):
+        day = number_of_rows[r][2]
+        date = number_of_rows[r][1]
+        page =[]
+        soup = BeautifulSoup(number_of_rows[r][0], 'html.parser')
+        for tag in soup.findAll('p'):
+            a = str(tag)
+            soup_1 = BeautifulSoup(a,"html.parser")
+            page.append(soup_1.find('p').getText())
+        string = date+"\n\n"+day+"\n\n"
+        for i in page:
+            string = string + i + "\n" 
+
+        string = string + "\n"+"##################################################################\n" 
+        name = username + ".txt"
+        f = open(name, "a")
+        f.write(string)
+        f.close() 
+    response = HttpResponse(string, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename=name'
+    return response

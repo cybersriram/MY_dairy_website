@@ -106,7 +106,7 @@ a {
 </style>
 </head>
 <body>
-
+{% block forgot %}
 <form action="register" method="POST">
   <div class="container">
     <h1>Register</h1>
@@ -149,6 +149,7 @@ a {
     <p>GO BACK TO HOME PAGE CLICK <a href="main">HERE</a>.</p>
   </div>
 </form>
+{% endblock %}
 <script>
   // Get the modal
   var modal = document.getElementById("myModal");

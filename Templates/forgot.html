@@ -1,0 +1,18 @@
+
+{% extends "register.html"%}
+{% block forgot %}
+<form action="forgot" method="POST">
+    {% csrf_token %}
+    <label for="uname"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="name"  required>
+    <label for="psw"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="psw"  required>
+
+    <label for="psw-repeat"><b>Repeat Password</b></label>
+    <input type="password" placeholder="Repeat Password" name="psw-repeat"  required>
+    <hr>
+    <button id = myBtn type="submit" class="registerbtn">Confirm</button>
+    <h4 style="color: aliceblue;">{{s}}</h4>
+</form>
+
+{% endblock %}
